@@ -12,7 +12,6 @@ public class PlayerInput : NetworkBehaviour
     {
         // Input accumulation is mandatory (at least for look rotation) as Update can be
         // called multiple times before next OnInput is called - common if rendering speed is faster than Fusion simulation.
-
         if (!HasInputAuthority) { return; }
         AccumulateInputFromMouseAndKeyboard();
     }
@@ -26,23 +25,40 @@ public class PlayerInput : NetworkBehaviour
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
         if (runner == null) { return; }
-        UnregisterFromFusionInputPollCallbacks();
+        UnregisterFromFusionInputPollCallback();
     }
 
     private void AccumulateInputFromMouseAndKeyboard()
+    {
+        CheckInputAccumulationRequirenments();
+        UpdateLookRotation();
+        UpdateMoveDirection();
+        UpdateButtons();
+    }
+
+    private void CheckInputAccumulationRequirenments()
     {
         if (Cursor.lockState != CursorLockMode.Locked)
         {
             _input.MoveDirection = default;
             return;
         }
+    }
 
+    private void UpdateLookRotation()
+    {
         Vector2 lookRotationDelta = new Vector2(-Input.GetAxisRaw("Mouse Y"), Input.GetAxisRaw("Mouse X"));
         _input.LookRotation = ClampLookRotation(_input.LookRotation + lookRotationDelta);
+    }
 
+    private void UpdateMoveDirection()
+    {
         Vector2 moveDirection = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         _input.MoveDirection = moveDirection.normalized;
+    }
 
+    private void UpdateButtons()
+    {
         _input.Buttons.Set(EInputButton.Jump, Input.GetButton("Jump"));
         _input.Buttons.Set(EInputButton.Sprint, Input.GetButton("Sprint"));
     }
@@ -53,7 +69,7 @@ public class PlayerInput : NetworkBehaviour
         _networkEvents.OnInput.AddListener(OnInput);
     }
 
-    private void UnregisterFromFusionInputPollCallbacks()
+    private void UnregisterFromFusionInputPollCallback()
     {
         if (_networkEvents != null)
         {
