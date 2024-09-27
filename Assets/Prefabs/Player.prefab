@@ -1442,7 +1442,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7486161783106940773}
   - component: {fileID: 6589217794543404800}
+  - component: {fileID: 2557319550624665155}
   - component: {fileID: 1014784170292511808}
+  - component: {fileID: 4009100328045499313}
   - component: {fileID: 426045580450923874}
   - component: {fileID: 8687737207959842141}
   m_Layer: 8
@@ -1487,7 +1489,26 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 2557319550624665155}
   - {fileID: 1014784170292511808}
+  - {fileID: 4009100328045499313}
+--- !u!114 &2557319550624665155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5609267092368825421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aac1ca8675b4da42a19e5501daf27a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _kcc: {fileID: 0}
+  _input: {fileID: 0}
+  _animator: {fileID: 0}
+  _cameraPivot: {fileID: 0}
+  _cameraHandle: {fileID: 0}
 --- !u!114 &1014784170292511808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1500,6 +1521,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047f54f87f6d28340a92d71aa380a480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4009100328045499313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5609267092368825421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1869825851, guid: 977dbcf975465374990f471e1497f563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _settings:
+    Shape: 1
+    IsTrigger: 0
+    Radius: 0.28
+    Height: 1.8
+    Extent: 0.035
+    ColliderLayer: 0
+    CollisionLayerMask:
+      serializedVersion: 2
+      m_Bits: 1
+    ProxyInterpolationMode: 0
+    MaxPenetrationSteps: 8
+    CCDRadiusMultiplier: 0.75
+    AntiJitterDistance: {x: 0.025, y: 0.01}
+    CompressNetworkPosition: 0
+    ForcePredictedLookRotation: 0
+    StepHeight: 0.5
+    StepDepth: 0.2
+    StepSpeed: 3
+    StepMinPushBack: 0.5
+    StepGroundCheckRadiusScale: 0.5
+    StepRequireGroundTarget: 0
+    SnapDistance: 0.5
+    SnapSpeed: 4
 --- !u!54 &426045580450923874
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -25,7 +25,7 @@ public class PlayerInput : NetworkBehaviour
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
         if (runner == null) { return; }
-        UnregisterFromFusionInputPollCallbacks();
+        UnregisterFromFusionInputPollCallback();
     }
 
     private void AccumulateInputFromMouseAndKeyboard()
@@ -69,7 +69,7 @@ public class PlayerInput : NetworkBehaviour
         _networkEvents.OnInput.AddListener(OnInput);
     }
 
-    private void UnregisterFromFusionInputPollCallbacks()
+    private void UnregisterFromFusionInputPollCallback()
     {
         if (_networkEvents != null)
         {
