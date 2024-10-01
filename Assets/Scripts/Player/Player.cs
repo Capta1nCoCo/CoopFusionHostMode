@@ -2,17 +2,16 @@ using UnityEngine;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using System;
-using static Constants;
 
 /// <summary>
-/// Main player script - controls movement and animations.
+/// Main player script - controls movement and updates animations.
 /// </summary>
 public class Player : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private SimpleKCC _kcc;
     [SerializeField] private PlayerInput _input;
-    [SerializeField] private Animator _animator;
+    [SerializeField] private PlayerAnimator _playerAnimator;
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private Transform _cameraHandle;
 
@@ -40,18 +39,6 @@ public class Player : NetworkBehaviour
     [Networked] private NetworkBool _isJumping { get; set; }
     [Networked] private NetworkButtons _previousButtons { get; set; }
 
-    // TODO: Encapsulate animation logic to a separate class.
-    private int _animIDSpeed;
-    private int _animIDGrounded;
-    private int _animIDJump;
-    private int _animIDFreeFall;
-    private int _animIDMotionSpeed;
-
-    private void Awake()
-    {
-        AssignAnimationIDs();
-    }
-
     private void LateUpdate()
     {
         if (!HasInputAuthority) { return; }
@@ -72,20 +59,7 @@ public class Player : NetworkBehaviour
 
     public override void Render()
     {
-        _animator.SetFloat(_animIDSpeed, _kcc.RealSpeed, Animations.DAMP_TIME, Time.deltaTime);
-        _animator.SetFloat(_animIDMotionSpeed, Animations.NORMAL_SPEED);
-        _animator.SetBool(_animIDJump, _isJumping);
-        _animator.SetBool(_animIDGrounded, _kcc.IsGrounded);
-        _animator.SetBool(_animIDFreeFall, _kcc.RealVelocity.y < Animations.GRAVITY_THRESHOLD);
-    }
-
-    private void AssignAnimationIDs()
-    {
-        _animIDSpeed = Animator.StringToHash(Animations.SPEED);
-        _animIDGrounded = Animator.StringToHash(Animations.GROUNDED);
-        _animIDJump = Animator.StringToHash(Animations.JUMP);
-        _animIDFreeFall = Animator.StringToHash(Animations.FREE_FALL);
-        _animIDMotionSpeed = Animator.StringToHash(Animations.MOTION_SPEED);
+        _playerAnimator.UpdateMovementAnimationVars(_kcc.RealSpeed, _isJumping, _kcc.IsGrounded, _kcc.RealVelocity);
     }
 
     private void MoveCamera()
@@ -182,5 +156,25 @@ public class Player : NetworkBehaviour
                 _isJumping = false;
             }
         }
+    }
+
+    // Animation event
+    private void OnFootstep(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight < 0.5f)
+            return;
+
+        if (_footstepAudioClips.Length > 0)
+        {
+            int index = UnityEngine.Random.Range(0, _footstepAudioClips.Length);
+            AudioSource.PlayClipAtPoint(_footstepAudioClips[index], _kcc.Position, _footstepAudioVolume);
+        }
+
+    }
+
+    // Animation event
+    private void OnLand(AnimationEvent animationEvent)
+    {
+        AudioSource.PlayClipAtPoint(_landingAudioClip, _kcc.Position, _footstepAudioVolume);
     }
 }
