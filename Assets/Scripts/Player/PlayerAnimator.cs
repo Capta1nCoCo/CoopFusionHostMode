@@ -12,7 +12,7 @@ public class PlayerAnimator : MonoBehaviour
     private int _animIDFreeFall;
     private int _animIDMotionSpeed;
 
-    private void Awake()
+    public void Init()
     {
         AssignAnimationIDs();
     }

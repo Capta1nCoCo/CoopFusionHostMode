@@ -1,7 +1,6 @@
 using UnityEngine;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
-using System;
 
 /// <summary>
 /// Main player script - controls movement and updates animations.
@@ -12,6 +11,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private SimpleKCC _kcc;
     [SerializeField] private PlayerInput _input;
     [SerializeField] private PlayerAnimator _playerAnimator;
+    [SerializeField] private PlayerAudio _playerAudio;
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private Transform _cameraHandle;
 
@@ -29,15 +29,15 @@ public class Player : NetworkBehaviour
     [SerializeField] private float _airAcceleration = 25f;
     [SerializeField] private float _airDeceleration = 1.3f;
 
-    [Header("Sounds")]
-    [SerializeField] private AudioClip[] _footstepAudioClips;
-    [SerializeField] private AudioClip _landingAudioClip;
-    [Range(0f, 1f)]
-    [SerializeField] private float _footstepAudioVolume = 0.5f;
-
     [Networked] private Vector3 _moveVelocity { get; set; }
     [Networked] private NetworkBool _isJumping { get; set; }
     [Networked] private NetworkButtons _previousButtons { get; set; }
+
+    private void Awake()
+    {
+        _playerAnimator.Init();
+        _playerAudio.Init(_kcc);
+    }
 
     private void LateUpdate()
     {
@@ -156,25 +156,5 @@ public class Player : NetworkBehaviour
                 _isJumping = false;
             }
         }
-    }
-
-    // Animation event
-    private void OnFootstep(AnimationEvent animationEvent)
-    {
-        if (animationEvent.animatorClipInfo.weight < 0.5f)
-            return;
-
-        if (_footstepAudioClips.Length > 0)
-        {
-            int index = UnityEngine.Random.Range(0, _footstepAudioClips.Length);
-            AudioSource.PlayClipAtPoint(_footstepAudioClips[index], _kcc.Position, _footstepAudioVolume);
-        }
-
-    }
-
-    // Animation event
-    private void OnLand(AnimationEvent animationEvent)
-    {
-        AudioSource.PlayClipAtPoint(_landingAudioClip, _kcc.Position, _footstepAudioVolume);
     }
 }
