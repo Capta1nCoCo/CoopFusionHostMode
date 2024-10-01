@@ -26,7 +26,7 @@ public class Player : NetworkBehaviour
 
     [Header("Movement Accelerations")]
     [SerializeField] private float _groundAcceleration = 55f;
-    [SerializeField] private float _groundDeaceleration = 25f;
+    [SerializeField] private float _groundDeceleration = 25f;
     [SerializeField] private float _airAcceleration = 25f;
     [SerializeField] private float _airDeceleration = 1.3f;
 
@@ -96,14 +96,21 @@ public class Player : NetworkBehaviour
 
     private void ProcessInput(GameplayInput input, NetworkButtons previousButtons)
     {
-        float jumpImpulse = 0f;
-        jumpImpulse = Jump(input, previousButtons, jumpImpulse);
-        ApplyFallAcceleration();
+        float jumpImpulse = Jump(input, previousButtons);
         float speed = Sprint(input);
+        Quaternion lookRotation = Quaternion.Euler(0f, input.LookRotation.y, 0f);
+        // Calculate correct move direction from input (rotated based on camera look)
+        Vector3 moveDirection = lookRotation * new Vector3(input.MoveDirection.x, 0f, input.MoveDirection.y);
+        Vector3 desiredMoveVelocity = moveDirection * speed;
+        float acceleration = CalculateAcceleration(moveDirection, desiredMoveVelocity);
+        CalculateMoveVelocity(desiredMoveVelocity, acceleration);
+
+        _kcc.Move(_moveVelocity, jumpImpulse);
     }
 
-    private float Jump(GameplayInput input, NetworkButtons previousButtons, float jumpImpulse)
+    private float Jump(GameplayInput input, NetworkButtons previousButtons)
     {
+        float jumpImpulse = 0f;
         // Comparing current input buttons to previous input buttonsthis prevents glitches when input is lost.
         if (_kcc.IsGrounded && input.Buttons.WasPressed(previousButtons, EInputButton.Jump))
         {
@@ -111,7 +118,7 @@ public class Player : NetworkBehaviour
             jumpImpulse = _jumpImpulse;
             _isJumping = true;
         }
-
+        ApplyFallAcceleration();
         return jumpImpulse;
     }
 
@@ -124,6 +131,46 @@ public class Player : NetworkBehaviour
     {
         float speed = input.Buttons.IsSet(EInputButton.Sprint) ? _sprintSpeed : _walkSpeed;
         return speed;
+    }
+
+    private float CalculateAcceleration(Vector3 moveDirection, Vector3 desiredMoveVelocity)
+    {
+        float acceleration;
+        if (desiredMoveVelocity == Vector3.zero)
+        {
+            acceleration = ProcessStopping();
+        }
+        else
+        {
+            RotateCharacterTowardsMoveDirectionOverTime(moveDirection);
+            acceleration = ProcessStopping();
+        }
+
+        return acceleration;
+    }
+
+    private float ProcessStopping()
+    {
+        return _kcc.IsGrounded ? _groundDeceleration : _airDeceleration;
+    }
+
+    private void RotateCharacterTowardsMoveDirectionOverTime(Vector3 moveDirection)
+    {
+        Quaternion currentRotation = _kcc.TransformRotation;
+        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+        Quaternion nextRotation = Quaternion.Lerp(currentRotation, targetRotation, _rotationSpeed * Runner.DeltaTime);
+
+        _kcc.SetLookRotation(nextRotation.eulerAngles);
+    }
+
+    private void CalculateMoveVelocity(Vector3 desiredMoveVelocity, float acceleration)
+    {
+        _moveVelocity = Vector3.Lerp(_moveVelocity, desiredMoveVelocity, acceleration * Runner.DeltaTime);
+        // Ensure consistent movement speed even on steep slope
+        if (_kcc.ProjectOnGround(_moveVelocity, out Vector3 projectedVector))
+        {
+            _moveVelocity = projectedVector;
+        }
     }
 
     private void StopJumping()
