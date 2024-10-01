@@ -2,6 +2,7 @@ using UnityEngine;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
 using System;
+using static Constants;
 
 /// <summary>
 /// Main player script - controls movement and animations.
@@ -46,11 +47,87 @@ public class Player : NetworkBehaviour
     private int _animIDFreeFall;
     private int _animIDMotionSpeed;
 
+    private void Awake()
+    {
+        AssignAnimationIDs();
+    }
+
+    private void LateUpdate()
+    {
+        if (!HasInputAuthority) { return; }
+        MoveCamera();
+    }
+
     public override void FixedUpdateNetwork()
     {
         GameplayInput input = GetInput<GameplayInput>().GetValueOrDefault();
         ProcessInput(input, _previousButtons);
+        StopJumping();
 
+        // Save current button input as previous.
+        // Previous buttons need to be networked to
+        // detect correctly pressed/released events.
+        _previousButtons = input.Buttons;
+    }
+
+    public override void Render()
+    {
+        _animator.SetFloat(_animIDSpeed, _kcc.RealSpeed, Animations.DAMP_TIME, Time.deltaTime);
+        _animator.SetFloat(_animIDMotionSpeed, Animations.NORMAL_SPEED);
+        _animator.SetBool(_animIDJump, _isJumping);
+        _animator.SetBool(_animIDGrounded, _kcc.IsGrounded);
+        _animator.SetBool(_animIDFreeFall, _kcc.RealVelocity.y < Animations.GRAVITY_THRESHOLD);
+    }
+
+    private void AssignAnimationIDs()
+    {
+        _animIDSpeed = Animator.StringToHash(Animations.SPEED);
+        _animIDGrounded = Animator.StringToHash(Animations.GROUNDED);
+        _animIDJump = Animator.StringToHash(Animations.JUMP);
+        _animIDFreeFall = Animator.StringToHash(Animations.FREE_FALL);
+        _animIDMotionSpeed = Animator.StringToHash(Animations.MOTION_SPEED);
+    }
+
+    private void MoveCamera()
+    {
+        _cameraPivot.rotation = Quaternion.Euler(_input.LookRotation);
+        Camera.main.transform.SetPositionAndRotation(_cameraHandle.position, _cameraHandle.rotation);
+    }
+
+    private void ProcessInput(GameplayInput input, NetworkButtons previousButtons)
+    {
+        float jumpImpulse = 0f;
+        jumpImpulse = Jump(input, previousButtons, jumpImpulse);
+        ApplyFallAcceleration();
+        float speed = Sprint(input);
+    }
+
+    private float Jump(GameplayInput input, NetworkButtons previousButtons, float jumpImpulse)
+    {
+        // Comparing current input buttons to previous input buttonsthis prevents glitches when input is lost.
+        if (_kcc.IsGrounded && input.Buttons.WasPressed(previousButtons, EInputButton.Jump))
+        {
+            // Set world space jump vector
+            jumpImpulse = _jumpImpulse;
+            _isJumping = true;
+        }
+
+        return jumpImpulse;
+    }
+
+    private void ApplyFallAcceleration()
+    {
+        _kcc.SetGravity(_kcc.RealVelocity.y >= 0f ? _upGravity : _downGravity);
+    }
+
+    private float Sprint(GameplayInput input)
+    {
+        float speed = input.Buttons.IsSet(EInputButton.Sprint) ? _sprintSpeed : _walkSpeed;
+        return speed;
+    }
+
+    private void StopJumping()
+    {
         if (_kcc.IsGrounded)
         {
             if (_isJumping)
@@ -58,14 +135,5 @@ public class Player : NetworkBehaviour
                 _isJumping = false;
             }
         }
-
-        // Save current button input as previous.
-        // Previous buttons need to be networked to detect correctly pressed/released events.
-        _previousButtons = input.Buttons;
-    }
-
-    private void ProcessInput(GameplayInput input, NetworkButtons previousButtons)
-    {
-        // TODO: Implementation.
     }
 }
