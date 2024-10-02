@@ -1,6 +1,7 @@
 using UnityEngine;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
+using System;
 
 /// <summary>
 /// Main player script - controls movement and updates animations.
@@ -112,20 +113,25 @@ public class Player : NetworkBehaviour
         float acceleration;
         if (desiredMoveVelocity == Vector3.zero)
         {
-            acceleration = ProcessStopping();
+            acceleration = GetDeceleration();
         }
         else
         {
             RotateCharacterTowardsMoveDirectionOverTime(moveDirection);
-            acceleration = ProcessStopping();
+            acceleration = GetAcceleration();
         }
 
         return acceleration;
     }
 
-    private float ProcessStopping()
+    private float GetDeceleration()
     {
         return _kcc.IsGrounded ? _groundDeceleration : _airDeceleration;
+    }
+
+    private float GetAcceleration()
+    {
+        return _kcc.IsGrounded ? _groundAcceleration : _airAcceleration;
     }
 
     private void RotateCharacterTowardsMoveDirectionOverTime(Vector3 moveDirection)
