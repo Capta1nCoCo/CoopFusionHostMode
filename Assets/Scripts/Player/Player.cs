@@ -20,8 +20,8 @@ public class Player : NetworkBehaviour
     [SerializeField] private float _walkSpeed = 2f;
     [SerializeField] private float _sprintSpeed = 5f;
     [SerializeField] private float _jumpImpulse = 10f;
-    [SerializeField] private float _upGravity = 25f;
-    [SerializeField] private float _downGravity = 40f;
+    [SerializeField] private float _upGravity = -25f;
+    [SerializeField] private float _downGravity = -40f;
     [SerializeField] private float _rotationSpeed = 8f;
 
     [Header("Movement Accelerations")]
