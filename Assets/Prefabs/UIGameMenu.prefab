@@ -121,7 +121,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2688841402733430538}
   m_TextViewport: {fileID: 4324369167693368009}
   m_TextComponent: {fileID: 8615563069420490785}
-  m_Placeholder: {fileID: 0}
+  m_Placeholder: {fileID: 5691981782266133252}
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
@@ -617,7 +617,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6479271857318341948}
   m_TextViewport: {fileID: 5420414568718326563}
   m_TextComponent: {fileID: 6467998199843138582}
-  m_Placeholder: {fileID: 0}
+  m_Placeholder: {fileID: 1546239054412739877}
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
@@ -1283,7 +1283,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1089854631289225692}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2204761912229027239}
+        m_TargetAssemblyTypeName: UIGameMenu, Assembly-CSharp
+        m_MethodName: Exit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3260676067744315568
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,7 +1479,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 251f5ad637237604a8382129ee751e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runnerPrefab: {fileID: 0}
+  _gameModeIdentifier: 
+  _runnerPrefab: {fileID: 4770597210465938794, guid: ace32383c5112e347b7bbe0d1368b787,
+    type: 3}
   _maxPlayerCount: 4
   _forceSinglePlayer: 0
   _panelGroup: {fileID: 6805582271996599130}
@@ -1998,7 +2012,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7989227035320028747}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2204761912229027239}
+        m_TargetAssemblyTypeName: UIGameMenu, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6768486734937347827
 GameObject:
   m_ObjectHideFlags: 0
@@ -2119,7 +2145,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9140826853679345264}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2204761912229027239}
+        m_TargetAssemblyTypeName: UIGameMenu, Assembly-CSharp
+        m_MethodName: DisconnectClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7796551981987972201
 GameObject:
   m_ObjectHideFlags: 0

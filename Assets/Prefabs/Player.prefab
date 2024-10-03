@@ -1515,8 +1515,8 @@ MonoBehaviour:
   _walkSpeed: 2
   _sprintSpeed: 5
   _jumpImpulse: 10
-  _upGravity: 25
-  _downGravity: 40
+  _upGravity: -25
+  _downGravity: -40
   _rotationSpeed: 8
   _groundAcceleration: 55
   _groundDeceleration: 25
