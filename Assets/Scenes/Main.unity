@@ -857,6 +857,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2204761912229027239, guid: 3f03c4700499eb643bce965a7aabafa6,
+        type: 3}
+      propertyPath: _gameModeIdentifier
+      value: coop
+      objectReference: {fileID: 0}
     - target: {fileID: 3868221415353379183, guid: 3f03c4700499eb643bce965a7aabafa6,
         type: 3}
       propertyPath: m_Name
