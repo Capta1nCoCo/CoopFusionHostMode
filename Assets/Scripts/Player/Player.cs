@@ -15,7 +15,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerAudio _playerAudio;
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private Transform _cameraHandle;
-    [SerializeField] private UINameplate _nameplate;
 
     [Header("Movement Setup")]
     [SerializeField] private float _walkSpeed = 2f;
@@ -35,9 +34,6 @@ public class Player : NetworkBehaviour
     [Networked] private NetworkBool _isJumping { get; set; }
     [Networked] private NetworkButtons _previousButtons { get; set; }
 
-    [Networked, HideInInspector, Capacity(24), OnChangedRender(nameof(OnNicknameChanged))]
-    public string Nickname { get; private set; }
-
     private void Awake()
     {
         _playerAnimator.Init();
@@ -48,15 +44,6 @@ public class Player : NetworkBehaviour
     {
         if (!HasInputAuthority) { return; }
         MoveCamera();
-    }
-
-    public override void Spawned()
-    {
-        if (HasInputAuthority)
-        {
-            RPC_SetNickname(PlayerPrefs.GetString(Constants.PlayerPrefsVars.PLAYER_NAME));
-        }
-        OnNicknameChanged();
     }
 
     public override void FixedUpdateNetwork()
@@ -175,17 +162,5 @@ public class Player : NetworkBehaviour
                 _isJumping = false;
             }
         }
-    }
-
-    private void OnNicknameChanged()
-    {
-        if (HasInputAuthority) { return; }
-        _nameplate.SetNickname(Nickname);
-    }
-
-    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_SetNickname(string nickname)
-    {
-        Nickname = nickname;
     }
 }
