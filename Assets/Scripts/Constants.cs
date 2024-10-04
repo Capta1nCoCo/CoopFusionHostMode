@@ -12,4 +12,9 @@ public static class Constants
         public const float NORMAL_SPEED = 1f;
         public const float GRAVITY_THRESHOLD = -10f;
     }
+
+    public static class PlayerPrefsVars
+    {
+        public const string PLAYER_NAME = "PlayerName";
+    }
 }

@@ -47,7 +47,7 @@ public class UIGameMenu : MonoBehaviour
     public async void StartGame()
     {
         await Disconnect();
-        PlayerPrefs.SetString("PlayerName", _nicknameText.text);
+        PlayerPrefs.SetString(Constants.PlayerPrefsVars.PLAYER_NAME, _nicknameText.text);
         _runnerInstance = Instantiate(_runnerPrefab);
 
         AddListnerForShutdowns();
