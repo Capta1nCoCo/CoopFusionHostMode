@@ -24,7 +24,7 @@ public class GameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 
     public void PlayerLeft(PlayerRef playerRef)
     {
-        if (!HasInputAuthority) { return; }
+        if (!HasStateAuthority) { return; }
 
         NetworkObject player = Runner.GetPlayerObject(playerRef);
         if (player != null)
