@@ -2,7 +2,7 @@ using UnityEngine;
 using Fusion;
 
 /// <summary>
-/// Handles player connections (Spawning of Player instances)
+/// Handles player connections (Spawning of Player instances).
 /// </summary>
 public class GameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {
@@ -24,7 +24,7 @@ public class GameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 
     public void PlayerLeft(PlayerRef playerRef)
     {
-        if (!HasInputAuthority) { return; }
+        if (!HasStateAuthority) { return; }
 
         NetworkObject player = Runner.GetPlayerObject(playerRef);
         if (player != null)

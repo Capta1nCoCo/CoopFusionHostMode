@@ -1,14 +1,14 @@
 using Fusion;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using static Constants.GeneralStrings;
 
 /// <summary>
-/// Shows in-game menu, handles player connecting disconnecting and cursor locking (thus, should be refactored).
+/// Shows in-game menu, handles player connecting/disconnecting and cursor locking.
 /// </summary>
 public class UIGameMenu : MonoBehaviour
 {
@@ -41,7 +41,7 @@ public class UIGameMenu : MonoBehaviour
     private void Update()
     {
         ProcessPanelVisibilityInput();
-        HandlePanelStates();
+        HandlePanelGroupStates();
     }
 
     public async void StartGame()
@@ -92,10 +92,12 @@ public class UIGameMenu : MonoBehaviour
 
     private void SetPlayerNicknameText()
     {
-        string nickname = PlayerPrefs.GetString("PlayerName");
+        string nickname = PlayerPrefs.GetString(Constants.PlayerPrefsVars.PLAYER_NAME);
         if (string.IsNullOrEmpty(nickname))
         {
-            nickname = "Player" + Random.Range(10000, 100000);
+            const int MIN_SUFFIX_VALUE = 10000;
+            const int MAX_SUFFIX_VALUE = 100000;
+            nickname = DEFAULT_PLAYER_NICKNAME + Random.Range(MIN_SUFFIX_VALUE, MAX_SUFFIX_VALUE);
         }
         _nicknameText.text = nickname;
     }
@@ -114,23 +116,31 @@ public class UIGameMenu : MonoBehaviour
         }
     }
 
-    private void HandlePanelStates()
+    private void HandlePanelGroupStates()
     {
         if (_panelGroup.gameObject.activeSelf)
         {
-            _startGroup.SetActive(_runnerInstance == null);
-            _disconnectGroup.SetActive(_runnerInstance != null);
-            _roomText.interactable = _runnerInstance == null;
-            _nicknameText.interactable = _runnerInstance == null;
-
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            ControlPanelGroup();
+            ChangeCursorState(CursorLockMode.None, true);
         }
         else
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            ChangeCursorState(CursorLockMode.Locked, false);
         }
+    }
+
+    private void ControlPanelGroup()
+    {
+        _startGroup.SetActive(_runnerInstance == null);
+        _disconnectGroup.SetActive(_runnerInstance != null);
+        _roomText.interactable = _runnerInstance == null;
+        _nicknameText.interactable = _runnerInstance == null;
+    }
+
+    private static void ChangeCursorState(CursorLockMode lockMode, bool isVisible)
+    {
+        Cursor.lockState = lockMode;
+        Cursor.visible = isVisible;
     }
 
     private void AddListnerForShutdowns()
@@ -155,7 +165,7 @@ public class UIGameMenu : MonoBehaviour
             PlayerCount = _maxPlayerCount,
             // We need to specify a session property for matchmaking to decide where the player wants to join.
             // So players from other game mods couldn't join. I plan 1v1 PvP Duels mode, so I added it.
-            SessionProperties = new Dictionary<string, SessionProperty>() { ["GameMode"] = _gameModeIdentifier },
+            SessionProperties = new Dictionary<string, SessionProperty>() { [GAME_MODE] = _gameModeIdentifier },
             Scene = sceneInfo,
         };
         return startArguments;
@@ -163,7 +173,7 @@ public class UIGameMenu : MonoBehaviour
 
     private void ProvideGameModeFeedbackText(StartGameArgs startArguments)
     {
-        _statusText.text = startArguments.GameMode == GameMode.Single ? "Starting single-player..." : "Connecting...";
+        _statusText.text = startArguments.GameMode == GameMode.Single ? SINGLE_PLAYER_TEXT : CONNECTING_TEXT;
     }
 
     private void ProvideConnectionFeedback(Task<StartGameResult> startTask)
@@ -175,13 +185,13 @@ public class UIGameMenu : MonoBehaviour
         }
         else
         {
-            _statusText.text = $"Connection Failed: {startTask.Result.ShutdownReason}";
+            _statusText.text = $"{CONNECTION_FAILED_TEXT}: {startTask.Result.ShutdownReason}";
         }
     }
 
     private void ProvideDisconnectionFeedback()
     {
-        _statusText.text = "Disconnecting...";
+        _statusText.text = DISCONNECTING_TEXT;
         _panelGroup.interactable = false;
     }
 
@@ -201,7 +211,7 @@ public class UIGameMenu : MonoBehaviour
     private static void SaveShutdownStatusInfo(ShutdownReason reason)
     {
         // Save status info into static variable to be used OnEnable after scene load
-        _shutdownStatus = $"Shutdown: {reason}";
+        _shutdownStatus = $"{SHUTDOWN_TEXT}: {reason}";
         Debug.LogWarning(_shutdownStatus);
     }
 

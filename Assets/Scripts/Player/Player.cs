@@ -1,7 +1,6 @@
 using UnityEngine;
 using Fusion;
 using Fusion.Addons.SimpleKCC;
-using System;
 
 /// <summary>
 /// Main player script - controls movement and updates animations.
@@ -74,7 +73,7 @@ public class Player : NetworkBehaviour
         float jumpImpulse = Jump(input, previousButtons);
         float speed = Sprint(input);
         Quaternion lookRotation = Quaternion.Euler(0f, input.LookRotation.y, 0f);
-        // Calculate correct move direction from input (rotated based on camera look)
+        // Calculate correct move direction from input (rotated based on camera look).
         Vector3 moveDirection = lookRotation * new Vector3(input.MoveDirection.x, 0f, input.MoveDirection.y);
         Vector3 desiredMoveVelocity = moveDirection * speed;
         float acceleration = CalculateAcceleration(moveDirection, desiredMoveVelocity);
