@@ -2,7 +2,7 @@ using UnityEngine;
 using Fusion;
 
 /// <summary>
-/// Handles player connections (Spawning of Player instances)
+/// Handles player connections (Spawning of Player instances).
 /// </summary>
 public class GameManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {

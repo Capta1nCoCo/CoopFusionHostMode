@@ -17,4 +17,15 @@ public static class Constants
     {
         public const string PLAYER_NAME = "PlayerName";
     }
+
+    public static class GeneralStrings
+    {
+        public const string GAME_MODE = "GameMode";
+        public const string SINGLE_PLAYER_TEXT = "Starting single-player...";
+        public const string CONNECTING_TEXT = "Connecting...";
+        public const string CONNECTION_FAILED_TEXT = "Connection Failed";
+        public const string DISCONNECTING_TEXT = "Disconnecting...";
+        public const string SHUTDOWN_TEXT = "Shutdown";
+        public const string DEFAULT_PLAYER_NICKNAME = "Player";
+    }
 }
