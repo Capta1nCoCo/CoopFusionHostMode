@@ -86,9 +86,9 @@ public class UIGameMenu : MonoBehaviour
         RemoveListenerForShutdowns();
 
         await _runnerInstance.Shutdown();
+        _runnerInstance = null;
         // Reset of scene network objects is needed, reload the whole scene
         ReloadCurrentScene();
-        _runnerInstance = null;
     }
 
     private void SetPlayerNicknameText()
@@ -219,11 +219,7 @@ public class UIGameMenu : MonoBehaviour
 
     private void ReloadCurrentScene()
     {
-        if (_runnerInstance.IsSceneAuthority)
-        {
-            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            _runnerInstance.UnloadScene(SceneRef.FromIndex(currentSceneIndex));
-            _runnerInstance.LoadScene(SceneRef.FromIndex(currentSceneIndex), LoadSceneMode.Single);
-        }
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 }
