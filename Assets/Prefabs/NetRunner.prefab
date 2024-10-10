@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4770597210465938794}
   - component: {fileID: 8351321263636431445}
   - component: {fileID: 5359983639448172899}
+  - component: {fileID: 3563980112714133486}
   m_Layer: 0
   m_Name: NetRunner
   m_TagString: Untagged
@@ -130,3 +131,17 @@ MonoBehaviour:
   BVHDepth: 0
   BVHNodes: 0
   TotalHitboxes: 0
+--- !u!114 &3563980112714133486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7939126976463444454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90a93abf1a391964a94e5c139605105b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsSceneTakeOverEnabled: 1
+  LogSceneLoadErrors: 1

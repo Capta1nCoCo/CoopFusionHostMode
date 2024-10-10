@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Sockets;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
@@ -167,6 +168,7 @@ public class UIGameMenu : MonoBehaviour
             // So players from other game mods couldn't join. I plan 1v1 PvP Duels mode, so I added it.
             SessionProperties = new Dictionary<string, SessionProperty>() { [GAME_MODE] = _gameModeIdentifier },
             Scene = sceneInfo,
+            SceneManager = _runnerInstance.GetComponent<NetworkSceneManagerDefault>()
         };
         return startArguments;
     }
@@ -215,8 +217,9 @@ public class UIGameMenu : MonoBehaviour
         Debug.LogWarning(_shutdownStatus);
     }
 
-    private static void ReloadCurrentScene()
+    private void ReloadCurrentScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 }
